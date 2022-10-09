@@ -1,2 +1,5 @@
 # Project exclude paths
 /target/
+/DataPersistency-Hibernate.iml
+/.idea/
+/src/lib/
