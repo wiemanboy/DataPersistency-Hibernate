@@ -14,7 +14,10 @@ public class Product {
     private String naam;
     private String beschrijving;
     private double prijs;
-    @Transient
+    @ManyToMany(
+            mappedBy = "products",
+            cascade = CascadeType.ALL
+    )
     private List<OVChipkaart> ovChipkaartList = new ArrayList<>();
 
     public Product(int productNummer, String naam, String beschrijving, double prijs) {

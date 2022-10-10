@@ -16,10 +16,14 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
 
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
 
-    @Transient
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "ov_chipkaart_product",
+            joinColumns = {@JoinColumn(name = "kaart_nummer"),},
+            inverseJoinColumns = {@JoinColumn(name = "product_nummer")})
     private List<Product> products = new ArrayList<>();
 
     public OVChipkaart(int kaartNummer, Date gelidgTot, int klasse, double saldo) {
