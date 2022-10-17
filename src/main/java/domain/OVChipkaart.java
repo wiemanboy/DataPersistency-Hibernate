@@ -37,6 +37,14 @@ public class OVChipkaart {
 
     }
 
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
+    }
+
     public void addProduct(Product product){
         if (!products.contains(product)) {
             products.add(product);
@@ -107,7 +115,7 @@ public class OVChipkaart {
         for (Product p : products) {
             lst.add(p.getProductNummer() + " " + p.getNaam() + " " + p.getBeschrijving() + " " + p.getPrijs());
         }
-        return "domain.OVChipkaart{" +
+        return "OVChipkaart{" +
                 "#" + kaartNummer +
                 " " + gelidgTot +
                 " " + klasse +

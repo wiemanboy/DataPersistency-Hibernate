@@ -13,7 +13,7 @@ public class Adres {
     private String straat;
     private String woonplaats;
 
-    @OneToOne (fetch = FetchType.LAZY)
+    @OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
 
@@ -27,6 +27,14 @@ public class Adres {
 
     public Adres() {
 
+    }
+
+    public Reiziger getReiziger() {
+        return reiziger;
+    }
+
+    public void setReiziger(Reiziger reiziger) {
+        this.reiziger = reiziger;
     }
 
     public String getHuisnummer() {
