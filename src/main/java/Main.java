@@ -84,8 +84,6 @@ public class Main {
         Transaction transaction = session.getTransaction();
 
         try {
-            transaction.begin();
-
             // make DAO
             OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOHibernate(session);
             AdresDAO adresDAO = new AdresDAOHibernate(session);
@@ -93,12 +91,10 @@ public class Main {
             ProductDAO productDAO = new ProductDAOHibernate(session);
 
             // test DAO
-            //testReizigerDAO(reizigerDAO);
-            //testAdresDAO(adresDAO, reizigerDAO);
-            //testOVChipDAO(ovChipkaartDAO, reizigerDAO);
+            testReizigerDAO(reizigerDAO);
+            testAdresDAO(adresDAO, reizigerDAO);
+            testOVChipDAO(ovChipkaartDAO, reizigerDAO);
             testProductDAO(productDAO, reizigerDAO);
-
-            transaction.commit();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -111,7 +107,7 @@ public class Main {
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
-        System.out.println("testReizigerDAO");
+        System.out.println("\n----------testReizigerDAO----------");
 
         Reiziger reiziger = new Reiziger(100,"j", null, "wieman", Date.valueOf("2004-04-17"));
 
@@ -146,6 +142,8 @@ public class Main {
     }
 
     private static void testAdresDAO(AdresDAO adao, ReizigerDAO rdao) throws SQLException {
+        System.out.println("\n----------testAdresDAO----------");
+
         Adres adres = new Adres(100, "1234LK", "3A", "brugweg", "utrecht");
         Reiziger reiziger = new Reiziger(100,"j", null, "wieman", Date.valueOf("2004-04-17"), adres);
         adres.setReiziger(reiziger);
@@ -180,6 +178,8 @@ public class Main {
     }
 
     private static void testOVChipDAO(OVChipkaartDAO odao, ReizigerDAO rdao) throws SQLException {
+        System.out.println("\n----------testOVChipkaartDAO----------");
+
         OVChipkaart ovChipkaart = new OVChipkaart(100, Date.valueOf("2004-04-17"), 1, 100);
         OVChipkaart ovChipkaart2 = new OVChipkaart(101, Date.valueOf("2004-04-17"), 1, 100);
         Adres adres = new Adres(100, "1234LK", "3A", "brugweg", "utrecht");
@@ -220,6 +220,8 @@ public class Main {
     }
 
     private static void testProductDAO(ProductDAO pdao, ReizigerDAO rdao) throws SQLException {
+        System.out.println("\n----------testProductDAO----------");
+
         OVChipkaart ovChipkaart = new OVChipkaart(100, Date.valueOf("2004-04-17"), 1, 100);
         OVChipkaart ovChipkaart2 = new OVChipkaart(101, Date.valueOf("2004-04-17"), 1, 100);
         Adres adres = new Adres(100, "1234LK", "3A", "brugweg", "utrecht");
@@ -227,7 +229,7 @@ public class Main {
         Product product = new Product(100,"test","test",100);
         adres.setReiziger(reiziger);
         ovChipkaart.setReiziger(reiziger);
-        reiziger.addOVChipkaart(ovChipkaart);
+        ovChipkaart2.setReiziger(reiziger);
 
         product.addOvChip(ovChipkaart);
 
@@ -246,15 +248,15 @@ public class Main {
         productList = pdao.findAll();
         System.out.println("after: " + productList.size());
 
-        System.out.println("\nfindById gives: " + pdao.findById(1));
-        //System.out.println("\nfindByReiziger gives: " + pdao.findByOvChipkaart(ovChipkaart));
+        System.out.println("\nfindById gives: " + pdao.findById(product.getProductNummer()));
+        System.out.println("\nfindByOVChipkaart gives: " + pdao.findByOvChipkaart(ovChipkaart));
 
         // test update
-        System.out.println("\nupdate before: " + pdao.findById(1));
-        //product.addOvChip(ovChipkaart2);
-        //product.setBeschrijving("tset");
-        //pdao.update(product);
-        System.out.println("update after: " + pdao.findById(1));
+        System.out.println("\nupdate before: " + pdao.findById(product.getProductNummer()));
+        product.addOvChip(ovChipkaart2);
+        product.setBeschrijving("tset");
+        pdao.update(product);
+        System.out.println("update after: " + pdao.findById(product.getProductNummer()));
 
         // test delete
         System.out.println("\ndelete before: " + productList.size());

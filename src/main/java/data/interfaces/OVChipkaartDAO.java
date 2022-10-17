@@ -13,6 +13,4 @@ public interface OVChipkaartDAO {
     List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException;
     List<OVChipkaart> findAll() throws SQLException;
     List<OVChipkaart> findById(int id) throws SQLException;
-
-    List<OVChipkaart> findByProduct(int id) throws SQLException;
 }

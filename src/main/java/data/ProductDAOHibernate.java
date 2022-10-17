@@ -4,6 +4,7 @@ import data.interfaces.ProductDAO;
 import domain.OVChipkaart;
 import domain.Product;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.sql.SQLException;
@@ -19,30 +20,46 @@ public class ProductDAOHibernate implements ProductDAO {
 
     @Override
     public boolean save(Product product) throws SQLException {
+        Transaction transaction = session.beginTransaction();
+
         session.persist(product);
         session.flush();
-        return true;    }
+
+        transaction.commit();
+        return true;
+    }
 
     @Override
     public boolean update(Product product) throws SQLException {
+        Transaction transaction = session.beginTransaction();
+
         session.merge(product);
         session.flush();
+
+        transaction.commit();
         return true;
     }
 
     @Override
     public boolean delete(Product product) throws SQLException {
+        Transaction transaction = session.beginTransaction();
+
         session.remove(product);
         session.flush();
+
+        transaction.commit();
         return true;
     }
 
     @Override
     public List<Product> findAll() throws SQLException {
-        Query query = session.createQuery("from Product");
+        Transaction transaction = session.beginTransaction();
+
+        Query query = session.createQuery("from Product", Product.class);
 
         List productList = query.list();
 
+        transaction.commit();
         if (!productList.isEmpty() && productList.get(0) instanceof Product) {
             return (List<Product>) productList;
         }
@@ -51,11 +68,14 @@ public class ProductDAOHibernate implements ProductDAO {
 
     @Override
     public Product findById(int id) throws SQLException {
-        Query query = session.createQuery("from Product where productNummer = ?1");
+        Transaction transaction = session.beginTransaction();
+
+        Query query = session.createQuery("from Product where productNummer = ?1", Product.class);
         query.setParameter(1, id);
 
         Object product = query.getSingleResult();
 
+        transaction.commit();
         if (product instanceof Product) {
             return (Product) product;
         }
@@ -64,11 +84,14 @@ public class ProductDAOHibernate implements ProductDAO {
 
     @Override
     public List<Product> findByOvChipkaart(OVChipkaart ovChipkaart) throws SQLException {
-        Query query = session.createQuery("from Product where ?1 in ovChipkaartList");
-        query.setParameter(1,ovChipkaart);
+        Transaction transaction = session.beginTransaction();
+
+        Query query = session.createQuery("from Product p join p.ovChipkaartList o where o.kaartNummer = :kaartNummer", Product.class);
+        query.setParameter("kaartNummer",ovChipkaart.getKaartNummer());
 
         List productList = query.list();
 
+        transaction.commit();
         if (!productList.isEmpty() && productList.get(0) instanceof Product) {
             return (List<Product>) productList;
         }
